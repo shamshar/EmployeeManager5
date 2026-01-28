@@ -1,0 +1,40 @@
+﻿# Get all employees
+GET http://localhost:7212/api/employees
+Accept: application/json
+
+###
+
+# Get single employee by Id
+GET http://localhost:5084/api/employees/1
+Accept: application/json
+
+###
+
+# Create a new employee
+POST http://localhost:5084/api/employees
+Content-Type: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "User",
+  "isDeveloper": true,
+  "departmentId": 1
+}
+
+###
+
+# Update employee
+PUT http://localhost:5084/api/employees/1
+Content-Type: application/json
+
+{
+  "firstName": "TestUpdated",
+  "lastName": "User",
+  "isDeveloper": false,
+  "departmentId": 1
+}
+
+###
+
+# Delete employee
+DELETE http://localhost:5084/api/employees/1

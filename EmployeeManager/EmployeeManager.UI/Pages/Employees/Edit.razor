@@ -1,0 +1,87 @@
+﻿@page "/employees/edit/{Id:int}"
+@using EmployeeManager.Domain.DTOs
+@using EmployeeManager.UI.Services
+@inject IEmployeeApiService EmployeeService
+@inject IDepartmentApiService DepartmentService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit Employee</PageTitle>
+
+<h1>Edit Employee</h1>
+
+@if (Employee is null || Departments is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="Employee" OnValidSubmit="UpdateEmployee">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-3">
+                    <label class="form-label">First Name:</label>
+                    <InputText class="form-control" @bind-Value="Employee.FirstName" />
+                    <ValidationMessage For="() => Employee.FirstName" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Last Name:</label>
+                    <InputText class="form-control" @bind-Value="Employee.LastName" />
+                    <ValidationMessage For="() => Employee.LastName" />
+                </div>
+
+                <div class="mb-3 form-check">
+                    <InputCheckbox class="form-check-input" @bind-Value="Employee.IsDeveloper" />
+                    <label class="form-check-label">Developer</label>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Department:</label>
+                    <InputSelect class="form-select" @bind-Value="Employee.DepartmentId">
+                        @foreach (var dept in Departments)
+                        {
+                            <option value="@dept.Id">@dept.Name</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => Employee.DepartmentId" />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a class="btn btn-secondary ms-2" href="/employees">Back to List</a>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private EmployeeEditDto? Employee;
+    private List<DepartmentDto>? Departments;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load all departments for dropdown
+        Departments = await DepartmentService.GetAllDepartmentsAsync();
+
+        // Load the employee by Id
+        Employee = await EmployeeService.GetEmployeeByIdAsync(Id);
+
+        if (Employee is null)
+        {
+            NavigationManager.NavigateTo("/employees/notfound");
+        }
+    }
+
+    private async Task UpdateEmployee()
+    {
+        if (Employee is null) return;
+
+        await EmployeeService.UpdateEmployeeAsync(Employee.Id, Employee);
+        NavigationManager.NavigateTo("/employees");
+    }
+}

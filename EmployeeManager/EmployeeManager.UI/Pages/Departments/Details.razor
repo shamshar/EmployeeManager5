@@ -1,0 +1,45 @@
+﻿@page "/departments/details/{Id:int}"
+@using EmployeeManager.Domain.DTOs
+@using EmployeeManager.UI.Services
+@inject IDepartmentApiService DepartmentApi
+@inject NavigationManager Navigation
+
+<h3>Department Details</h3>
+
+@if (Department is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@Department.Name</h5>
+            <p class="card-text"><strong>Id:</strong> @Department.Id</p>
+        </div>
+    </div>
+
+    <button class="btn btn-secondary mt-3" @onclick="GoBack">Back to List</button>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private DepartmentDto? Department;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Department = await DepartmentApi.GetDepartmentByIdAsync(Id);
+
+        if (Department is null)
+        {
+            Navigation.NavigateTo("/departments/notfound");
+        }
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/departments");
+    }
+}

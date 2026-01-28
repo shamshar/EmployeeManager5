@@ -1,0 +1,131 @@
+﻿@page "/employees"
+@using EmployeeManager.Domain.DTOs
+@using EmployeeManager.UI.Services
+@inject IEmployeeApiService EmployeeApi
+@inject NavigationManager Navigation
+
+<h1>Employees</h1>
+
+@if (employees == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>
+        <button class="btn btn-primary" @onclick="GoToCreate">Create New</button>
+    </p>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Department</th>
+                <th>Developer</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in pagedEmployees)
+            {
+                <tr @key="e.Id">
+                    <td>@e.FirstName</td>
+                    <td>@e.LastName</td>
+                    <td>@e.DepartmentName</td>
+                    <td>@(e.IsDeveloper ? "Yes" : "No")</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm me-1" href="@($"employees/edit/{e.Id}")">Edit</a>
+                        <a class="btn btn-info btn-sm me-1" href="@($"employees/details/{e.Id}")">Details</a>
+                        <a class="btn btn-danger btn-sm" href="@($"employees/delete?id={e.Id}")">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <nav aria-label="Employee pagination">
+        <ul class="pagination">
+
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <button class="page-link" @onclick="PrevPage">Previous</button>
+            </li>
+
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(currentPage == i ? "active" : "")">
+                    <button class="page-link" @onclick="(() => GoToPage(i))">@i</button>
+                </li>
+            }
+
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <button class="page-link" @onclick="NextPage">Next</button>
+            </li>
+
+        </ul>
+    </nav>
+}
+
+@code {
+    private List<EmployeeDto>? employees;
+    private IEnumerable<EmployeeDto>? pagedEmployees;
+
+    private int currentPage = 1;
+    private int pageSize = 5;     // change as needed
+    private int totalPages = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEmployees();
+        ApplyPaging();
+    }
+
+    private async Task LoadEmployees()
+    {
+        employees = await EmployeeApi.GetAllEmployeesAsync();
+        totalPages = (int)Math.Ceiling((double)employees.Count / pageSize);
+    }
+
+    private void ApplyPaging()
+    {
+        pagedEmployees = employees?
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        StateHasChanged(); // ensures UI updates
+    }
+
+    private void GoToPage(int page)
+    {
+        if (page >= 1 && page <= totalPages)
+        {
+            currentPage = page;
+            ApplyPaging();
+        }
+    }
+
+    private void PrevPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+            ApplyPaging();
+        }
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < totalPages)
+        {
+            currentPage++;
+            ApplyPaging();
+        }
+    }
+
+    private void GoToCreate()
+    {
+        Navigation.NavigateTo("/employees/create");
+    }
+}

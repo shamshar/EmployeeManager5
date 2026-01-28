@@ -1,0 +1,7 @@
+@EmployeeManager.API_HostAddress = http://localhost:5084
+
+GET {{EmployeeManager.API_HostAddress}}/api/employees
+Accept: application/json
+
+
+###

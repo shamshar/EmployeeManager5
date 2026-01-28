@@ -1,0 +1,60 @@
+﻿@page "/departments"
+@using EmployeeManager.Domain.DTOs
+@using EmployeeManager.UI.Services
+@inject IDepartmentApiService DepartmentApi
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<h1>Departments</h1>
+
+<p>
+    <button class="btn btn-primary" @onclick="GoToCreate">Create New Department</button>
+</p>
+
+@if (departments == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dept in departments)
+            {
+                <tr @key="dept.Id">
+                    <td>@dept.Name</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm me-1" href="@($"departments/edit/{dept.Id}")">Edit</a>
+                        <a class="btn btn-info btn-sm me-1" href="@($"departments/details/{dept.Id}")">Details</a>
+                        <a class="btn btn-danger btn-sm" href="@($"departments/delete/{dept.Id}")">Delete</a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<DepartmentDto>? departments;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDepartments();
+    }
+
+    private async Task LoadDepartments()
+    {
+        departments = await DepartmentApi.GetAllDepartmentsAsync();
+    }
+
+    private void GoToCreate() => Navigation.NavigateTo("/departments/create");
+
+    
+}

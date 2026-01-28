@@ -1,0 +1,36 @@
+﻿@page "/departments/create"
+@using EmployeeManager.Domain.DTOs
+@using EmployeeManager.UI.Services
+@inject IDepartmentApiService DepartmentApi
+@inject NavigationManager Navigation
+
+<h3>Create Department</h3>
+
+<EditForm Model="NewDepartment" OnValidSubmit="CreateDepartment">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <InputText class="form-control" @bind-Value="NewDepartment.Name" />
+        <ValidationMessage For="() => NewDepartment.Name" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="button" class="btn btn-secondary ms-2" @onclick="Cancel">Cancel</button>
+</EditForm>
+
+@code {
+    private DepartmentCreateDto NewDepartment = new();
+
+    private async Task CreateDepartment()
+    {
+        await DepartmentApi.CreateDepartmentAsync(NewDepartment);
+        Navigation.NavigateTo("/departments");
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/departments");
+    }
+}

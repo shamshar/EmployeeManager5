@@ -1,0 +1,71 @@
+﻿@page "/employees/create"
+@using EmployeeManager.Domain.DTOs
+@using EmployeeManager.Domain.Interfaces
+@using EmployeeManager.UI.Services
+@inject IEmployeeApiService EmployeeApi
+@inject IDepartmentApiService DepartmentApi
+@inject NavigationManager Navigation
+
+<h3>Create Employee</h3>
+
+<EditForm Model="NewEmployee" OnValidSubmit="CreateEmployee">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" />
+
+    <div class="mb-3">
+        <label class="form-label">First Name</label>
+        <InputText class="form-control" @bind-Value="NewEmployee.FirstName" />
+        <ValidationMessage For="() => NewEmployee.FirstName" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Last Name</label>
+        <InputText class="form-control" @bind-Value="NewEmployee.LastName" />
+        <ValidationMessage For="() => NewEmployee.LastName" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Department</label>
+        <InputSelect class="form-select" @bind-Value="NewEmployee.DepartmentId">
+            <option value="">-- Select Department --</option>
+            @foreach (var dept in Departments)
+            {
+                <option value="@dept.Id">@dept.Name</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="() => NewEmployee.DepartmentId" />
+    </div>
+
+    <div class="form-check mb-3">
+        <InputCheckbox class="form-check-input" @bind-Value="NewEmployee.IsDeveloper" />
+        <label class="form-check-label">Developer</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="button" class="btn btn-secondary ms-2" @onclick="Cancel">Cancel</button>
+</EditForm>
+
+@code {
+    private EmployeeCreateDto NewEmployee = new EmployeeCreateDto();
+    private List<DepartmentDto> Departments = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load departments from API
+        Departments = await DepartmentApi.GetAllDepartmentsAsync();
+    }
+
+    private async Task CreateEmployee()
+    {
+        // Call API to create employee
+        await EmployeeApi.CreateEmployeeAsync(NewEmployee);
+
+        // Navigate back to list
+        Navigation.NavigateTo("/employees");
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/employees");
+    }
+}
