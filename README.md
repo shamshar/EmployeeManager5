@@ -2,7 +2,7 @@
 
 Hello developer! 👋
 
-EmployeeManager is a .NET 10 Blazor Server application for managing employees and departments. It provides full CRUD functionality, communicates with a backend Web API for data operations, and demonstrates clean separation between UI, API, and domain layers.
+EmployeeManager is a .NET 10 Blazor Server application for managing employees and departments. It provides full CRUD functionality, communicates with a backend Web API for data operations, and demonstrates clean separation between UI, API, and domain layers. The application is designed following SOLID principles, ensuring maintainable, scalable, and testable code.
 
 Getting Started
 Step 1 — Clone and Run EmployeeManager3
@@ -60,10 +60,15 @@ HttpClient (Service communication)
 Features
 
 ✔ Employees Management — Create, edit, delete, and view details
+
 ✔ Departments Management — Create, edit, delete, and view details
+
 ✔ Form Validation — Required fields & validation
+
 ✔ Navigation — Top navigation + sidebar
+
 ✔ Responsive UI — Bootstrap for desktop + mobile
+
 ✔ Not Found Pages — Handles missing or invalid routes
 
 Architecture Overview
@@ -71,6 +76,15 @@ Layer	Responsibility
 Domain	DTOs, shared contracts, service interfaces
 API	Controllers, EF Core DbContext, services
 UI (Blazor Server)	Pages/components calling the API via HttpClient
+
+The application follows SOLID principles, ensuring:
+
+Each layer has a single responsibility
+
+Dependencies are injected appropriately
+
+Code is maintainable, extensible, and testable
+
 Project Structure
 EmployeeManager/
 ├── Domain/          # DTOs + service interfaces
@@ -88,3 +102,5 @@ Bootstrap styling + validation on all forms
 Database shared between EmployeeManager3 + EmployeeManager5
 
 Compatible with Visual Studio 2022 and .NET 10
+
+Designed following SOLID principles for clean, maintainable, and scalable code
