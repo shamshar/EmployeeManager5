@@ -7,7 +7,7 @@ EmployeeManager is a .NET 10 Blazor Server application for managing employees an
 Getting Started
 Step 1 — Clone and Run EmployeeManager3
 
-Clone the original API/UI solution:
+Clone the original solution:
 
 git clone https://github.com/shamshar/EmployeeManager3.git
 
