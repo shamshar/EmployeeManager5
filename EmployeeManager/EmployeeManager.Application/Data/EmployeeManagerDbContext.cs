@@ -10,15 +10,15 @@ public class EmployeeManagerDbContext : DbContext
     {
     }
 
-    public DbSet<Employee> Employees => Set<Employee>();
-    public DbSet<Department> Departments => Set<Department>();
+    public DbSet<Employee> Employee => Set<Employee>();
+    public DbSet<Department> Department => Set<Department>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         // Map EF Core entity to your existing table names
-        modelBuilder.Entity<Employee>().ToTable("Employees");
-        modelBuilder.Entity<Department>().ToTable("Departments"); // if department table is also singular
+        modelBuilder.Entity<Employee>().ToTable("Employee");
+        modelBuilder.Entity<Department>().ToTable("Department"); // if department table is also singular
     }
 }

@@ -26,7 +26,7 @@ public class EmployeeService : IEmployeeService
             DepartmentId = dto.DepartmentId
         };
 
-        _db.Employees.Add(entity);
+        _db.Employee.Add(entity);
         await _db.SaveChangesAsync();
         return entity.Id;
     }
@@ -34,10 +34,10 @@ public class EmployeeService : IEmployeeService
     // Delete employee by Id
     public async Task DeleteAsync(int id)
     {
-        var employee = await _db.Employees.FindAsync(id);
+        var employee = await _db.Employee.FindAsync(id);
         if (employee != null)
         {
-            _db.Employees.Remove(employee);
+            _db.Employee.Remove(employee);
             await _db.SaveChangesAsync();
         }
     }
@@ -45,7 +45,7 @@ public class EmployeeService : IEmployeeService
     // Get all employees
     public async Task<List<EmployeeDto>> GetAllAsync()
     {
-        return await _db.Employees
+        return await _db.Employee
             .Include(e => e.Department)
             .Select(e => new EmployeeDto
             {
@@ -62,7 +62,7 @@ public class EmployeeService : IEmployeeService
     // Get single employee by Id
     public async Task<EmployeeDto?> GetByIdAsync(int id)
     {
-        var e = await _db.Employees
+        var e = await _db.Employee
             .Include(e => e.Department)
             .FirstOrDefaultAsync(e => e.Id == id);
 
@@ -82,7 +82,7 @@ public class EmployeeService : IEmployeeService
     // Update employee
     public async Task UpdateAsync(EmployeeEditDto dto)
     {
-        var employee = await _db.Employees.FindAsync(dto.Id);
+        var employee = await _db.Employee.FindAsync(dto.Id);
         if (employee == null) return;
 
         employee.FirstName = dto.FirstName;
